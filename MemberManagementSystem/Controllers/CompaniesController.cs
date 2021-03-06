@@ -1,4 +1,4 @@
-﻿using MemberManagementSystem.Models.DAL;
+﻿using MemberManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +11,17 @@ namespace MemberManagementSystem.Controllers
     [ApiController]
     public class CompaniesController : ControllerBase
     {
+        private readonly MMSDbContext _context;
+
         // GET: api/<CompaniesController>
         [HttpGet]
         public IEnumerable<Comapny> Get()
         {
             var result = new List<Comapny>();
 
-            using (var db = new MMSDbContext())
+            using (_context)
             {
-                result = db.Comapnies.ToList();
+                result = _context.Comapnies.ToList();
             }
             return result.ToArray();
         }
@@ -30,9 +32,9 @@ namespace MemberManagementSystem.Controllers
         {
             var result = new Comapny();
 
-            using (var db = new MMSDbContext())
+            using (_context)
             {
-                result = db.Comapnies.SingleOrDefault(obj => obj.Id == id);
+                result = _context.Comapnies.SingleOrDefault(obj => obj.Id == id);
             }
             if (result == null)
             {
@@ -43,7 +45,7 @@ namespace MemberManagementSystem.Controllers
 
         // POST api/<CompaniesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Comapny value)
         {
         }
 
