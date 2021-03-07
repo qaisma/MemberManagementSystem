@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace MemberManagementSystem
 {
-    public static class Utilities
+    public static class Enums
     {
-        public enum Statuses : int
+        public enum Statuses
         {
-            ACTIVE = 1,
-            INACTIVE = 2
+            [EnumMember(Value = "0")]
+            ACTIVE,
+
+
+            [EnumMember(Value = "1")]
+            INACTIVE
         }
     }
 }

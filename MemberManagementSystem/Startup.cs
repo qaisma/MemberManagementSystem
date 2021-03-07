@@ -29,6 +29,7 @@ namespace MemberManagementSystem
         {
             services.AddDbContext<MMSDbContext>(opt =>
                                                opt.UseSqlServer(Configuration.GetConnectionString("MMSConnectionString")));
+
             services.AddControllers();
         }
 
