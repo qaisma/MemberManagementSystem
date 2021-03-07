@@ -16,6 +16,8 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace MemberManagementSystem.Models
 {
@@ -117,21 +119,34 @@ namespace MemberManagementSystem.Models
     // Accounts
     public class Account
     {
+        [JsonIgnore]
         public int MemberId { get; set; } // MemberId (Primary key)
+        [JsonIgnore]
         public int CompanyId { get; set; } // CompanyId (Primary key)
         public int Balance { get; set; } // Balance
-        public byte Status { get; set; } // Status
+
+        [JsonProperty(PropertyName = "Name")]
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public string CompanyName { get; set; }
+
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Enums.Statuses Status { get; set; } // Status
 
         // Foreign keys
 
         /// <summary>
         /// Parent Comapny pointed by [Accounts].([CompanyId]) (FK_Accounts_Comapnies)
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
         public virtual Comapny Comapny { get; set; } // FK_Accounts_Comapnies
 
         /// <summary>
         /// Parent Member pointed by [Accounts].([MemberId]) (FK_Accounts_Members)
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
         public virtual Member Member { get; set; } // FK_Accounts_Members
 
         public Account()
@@ -162,9 +177,13 @@ namespace MemberManagementSystem.Models
     // Members
     public class Member
     {
+        [JsonIgnore]
         public int Id { get; set; } // Id (Primary key)
         public string Name { get; set; } // Name (length: 150)
         public string Address { get; set; } // Address (length: 500)
+
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
         public int UserId { get; set; } // UserId
 
         // Reverse navigation
@@ -179,6 +198,8 @@ namespace MemberManagementSystem.Models
         /// <summary>
         /// Parent User pointed by [Members].([UserId]) (FK_Members_Users)
         /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
         public virtual User User { get; set; } // FK_Members_Users
 
         public Member()
@@ -229,7 +250,7 @@ namespace MemberManagementSystem.Models
             builder.Property(x => x.MemberId).HasColumnName(@"MemberId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.CompanyId).HasColumnName(@"CompanyId").HasColumnType("int").IsRequired().ValueGeneratedNever();
             builder.Property(x => x.Balance).HasColumnName(@"Balance").HasColumnType("int").IsRequired();
-            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("tinyint").IsRequired();
+            builder.Property(x => x.Status).HasColumnName(@"Status").HasColumnType("int").IsRequired();
 
             // Foreign keys
             builder.HasOne(a => a.Comapny).WithMany(b => b.Accounts).HasForeignKey(c => c.CompanyId).OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_Accounts_Comapnies");
